@@ -2,8 +2,9 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: clear-jobs
+  namespace: api
 spec:
-  schedule: "*/5 * * * *"
+  schedule: "*/1 * * * *"
   jobTemplate:
     spec:
       template:

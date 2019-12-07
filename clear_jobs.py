@@ -42,5 +42,11 @@ try:
 
             print("Deleted job %s\n. Status Failed" % job_name)
 
+        if status.completed:
+            print("CRONJOB###################################")
+            if 'clear-jobs' in job_name:
+                print(job)
+                print("BIEN##################################")
+
 except ApiException as e:
     print("Exception when calling BatchV1Api->list_namespaced_job: %s\n" % e)
