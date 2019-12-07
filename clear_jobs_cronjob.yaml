@@ -1,0 +1,18 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: clear-jobs
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: clear-failed-jobs
+            image: k8s_jobs_cleaner:latest
+            imagePullPolicy: Never
+            args:
+            - python
+            - clear_jobs.py
+          restartPolicy: OnFailure
