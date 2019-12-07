@@ -15,4 +15,5 @@ spec:
             args:
             - python
             - clear_jobs.py
+            - namespace=api
           restartPolicy: OnFailure

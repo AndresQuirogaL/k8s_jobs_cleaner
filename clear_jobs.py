@@ -1,14 +1,32 @@
+import sys
+
 from kubernetes import client
 from kubernetes import config
 from kubernetes.client.rest import ApiException
 
+arguments = sys.argv
+
+# Delete first argument (script name)
+del arguments[0]
+
+valid_arguments = [
+    'namespace',
+]
+
+arguments_dict = {}
+
+for argument in arguments:
+    argument_name, argument_value = argument.split('=')
+    arguments_dict[argument_name] = argument_value
+
+namespace = arguments_dict['namespace']
 
 config.load_incluster_config()
 k8s_batch_client = client.BatchV1Api()
 
 # corp-datascience-dev-pre
 try:
-    api_response = k8s_batch_client.list_namespaced_job('api')
+    api_response = k8s_batch_client.list_namespaced_job(namespace)
     for job in api_response.items:
         status = job.status
         job_name = job.metadata.labels['job-name']
@@ -16,7 +34,7 @@ try:
         if status.failed:
             k8s_batch_client.delete_namespaced_job(
                 name=job_name,
-                namespace='api',
+                namespace=namespace,
                 body=client.V1DeleteOptions(
                     propagation_policy='Foreground',
                 )
