@@ -4,7 +4,7 @@ metadata:
   name: clear-jobs
   namespace: api
 spec:
-  schedule: "*/1 * * * *"
+  schedule: "*/5 * * * *"
   jobTemplate:
     spec:
       template:
