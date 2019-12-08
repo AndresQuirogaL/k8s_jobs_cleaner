@@ -11,6 +11,7 @@ del arguments[0]
 
 valid_arguments = [
     'namespace',
+    'cronjob-name',
 ]
 
 arguments_dict = {}
@@ -20,6 +21,7 @@ for argument in arguments:
     arguments_dict[argument_name] = argument_value
 
 namespace = arguments_dict['namespace']
+cronjob_name = arguments_dict['cronjob-name']
 
 config.load_incluster_config()
 k8s_batch_client = client.BatchV1Api()
@@ -31,7 +33,10 @@ try:
         status = job.status
         job_name = job.metadata.labels['job-name']
 
-        if status.failed:
+        if (
+            status.failed or
+            status.succeeded and cronjob_name in job_name
+        ):
             k8s_batch_client.delete_namespaced_job(
                 name=job_name,
                 namespace=namespace,
@@ -39,14 +44,6 @@ try:
                     propagation_policy='Foreground',
                 )
             )
-
-            print("Deleted job %s\n. Status Failed" % job_name)
-
-        if status.completed:
-            print("CRONJOB###################################")
-            if 'clear-jobs' in job_name:
-                print(job)
-                print("BIEN##################################")
 
 except ApiException as e:
     print("Exception when calling BatchV1Api->list_namespaced_job: %s\n" % e)

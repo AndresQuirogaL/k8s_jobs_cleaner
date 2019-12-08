@@ -9,6 +9,7 @@ spec:
     spec:
       template:
         spec:
+          serviceAccountName: job-reader-sa
           containers:
           - name: clear-failed-jobs
             image: k8s_jobs_cleaner:latest
@@ -17,4 +18,5 @@ spec:
             - python
             - clear_jobs.py
             - namespace=api
+            - cronjob-name=clear-jobs
           restartPolicy: OnFailure
