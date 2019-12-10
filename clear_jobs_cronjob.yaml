@@ -4,7 +4,7 @@ metadata:
   name: clear-jobs
   namespace: api
 spec:
-  schedule: "*/5 * * * *"
+  schedule: "*/1 * * * *"
   jobTemplate:
     spec:
       template:
@@ -17,6 +17,13 @@ spec:
             args:
             - python
             - clear_jobs.py
-            - namespace=api
-            - cronjob-name=clear-jobs
+            env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: CRONJOB_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
           restartPolicy: OnFailure
