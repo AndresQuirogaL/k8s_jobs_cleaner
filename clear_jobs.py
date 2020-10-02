@@ -11,12 +11,18 @@ namespace = os.environ.get('NAMESPACE')
 config.load_incluster_config()
 k8s_batch_client = client.BatchV1Api()
 
-# corp-datascience-dev-pre
 try:
     api_response = k8s_batch_client.list_namespaced_job(namespace)
+
+    print("api_response.items#########################################")
+    print(len(api_response.items))
+    print("api_response.items#########################################")
+
     for job in api_response.items:
         status = job.status
-        job_name = job.metadata.labels['job-name']
+
+        job_name = job.metadata.name
+        # job_name = job.metadata.labels['job-name']
 
         if status.failed:
             k8s_batch_client.delete_namespaced_job(
